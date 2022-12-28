@@ -15,9 +15,19 @@
             <li>
                 <a href="/tasks">Tasks</a>
             </li>
+
+            {% if user.is_authenticated %}
+            <li>
+                <a href="/logout">Logout</a>
+            </li>
+            {% else %}
             <li>
                 <a href="/signup">Signup</a>
             </li>
+            <li>
+                <a href="/signin">Sign In</a>
+            </li>
+            {% endif %}
         </ul>
     </nav>
     <h1>Django CRUD App</h1>
