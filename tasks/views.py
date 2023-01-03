@@ -3,6 +3,8 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from django.contrib.auth import login, logout, authenticate
 from django.db import IntegrityError #valida error del nombre de usuario, el cual es unico. Si se repite tira el error.
+from .forms import CreateTaskForm
+
 # Create your views here.
 
 def index(request):
@@ -55,3 +57,21 @@ def signin(request):
         else:
             login(request,user) #coloca un sessionid en las cookies
             return redirect ('tasks')
+
+def create_task(request):
+    if request.method=='GET':
+        return render(request,'createtask.html',{
+            'form':CreateTaskForm
+        })
+    else:
+        try:
+            form=CreateTaskForm(request.POST)
+            new_task=form.save(commit=False)
+            new_task.user=request.user
+            new_task.save()
+            return redirect('tasks')
+        except:
+            return render(request,'createtask.html',{
+            'form':CreateTaskForm,
+            'error':'Error, try again.'
+        })
