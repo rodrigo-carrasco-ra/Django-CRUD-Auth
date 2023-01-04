@@ -21,9 +21,11 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('',views.index, name='index'),
     path('signup/',views.signup,name='signup'),
-    path('tasks/',views.tasks,name='tasks'),
     path('logout/',views.logging_out,name='logout'),
     path('signin/',views.signin,name='signin'),
+    path('tasks/',views.tasks,name='tasks'),
     path('tasks/create/',views.create_task,name='createask'),
+    path('tasks/<int:task_id>/',views.read_task,name='readtask'),
+
 
 ]

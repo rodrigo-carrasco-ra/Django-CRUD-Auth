@@ -1,9 +1,10 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from django.contrib.auth import login, logout, authenticate
 from django.db import IntegrityError #valida error del nombre de usuario, el cual es unico. Si se repite tira el error.
 from .forms import CreateTaskForm
+from .models import Task
 
 # Create your views here.
 
@@ -35,7 +36,8 @@ def signup(request):
                 })
 
 def tasks (request):
-    return render (request,'tasks.html')
+    tasks=Task.objects.filter(user=request.user,date_completed__isnull=True) #muestra tareas segun usuario y si datecompleted es falso o no ha sido completada
+    return render (request,'tasks.html',{'tasks':tasks})
 
 def logging_out(request):
     logout(request)
@@ -75,3 +77,9 @@ def create_task(request):
             'form':CreateTaskForm,
             'error':'Error, try again.'
         })
+
+def read_task(request,task_id):
+    task=get_object_or_404(Task,pk=task_id)# solicito el modelo Task y busca el dato donde el pk sea igual a task_id Y si no esta tira error 404
+    return render (request,'readtask.html',{
+        'task':task
+    })

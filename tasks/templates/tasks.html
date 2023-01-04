@@ -4,6 +4,23 @@
 
 {% block content %}
 
-<h1>Task Creation</h1>
+<h1>Pending Tasks for You</h1>
+
+<ul>
+    {% for i in tasks %}
+    <li>
+        <a href="{% url 'readtask' i.id %}">
+        {% if i.is_important %}
+            <h1>{{i.title}}</h1>
+        {% else %}
+            <h3>{{i.title}}</h3>
+        {% endif %}
+        <p>{{i.description}}</p>
+        <p>{{i.user.username}}</p>
+        <p>{{i.is_important}}</p>
+        </a>
+    </li>
+    {% endfor %}
+</ul>
 
 {% endblock %}
