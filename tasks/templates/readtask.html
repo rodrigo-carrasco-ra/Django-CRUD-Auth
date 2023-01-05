@@ -4,6 +4,8 @@
     <h1>Read Your Task</h1>
     <h2>Task details:</h2>
     <h1>Title: {{task.title}}</h1>
+
+    {{error}}    
     
     <form method="POST">
         {% csrf_token %}
@@ -11,7 +13,8 @@
         <button>
             Update Task
         </button>
-
     </form>
+
+    <button>Task Completed</button>
 
     {% endblock %}

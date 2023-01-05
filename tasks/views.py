@@ -79,9 +79,22 @@ def create_task(request):
         })
 
 def read_task(request,task_id):
-    task=get_object_or_404(Task,pk=task_id)# solicito el modelo Task y busca el dato donde el pk sea igual a task_id Y si no esta tira error 404
-    form = CreateTaskForm(instance=task)
-    return render (request,'readtask.html',{
-        'task':task,
-        'form':form
-    })
+    if request.method == 'GET':
+        task=get_object_or_404(Task,pk=task_id, user=request.user)# solicito el modelo Task y busca el dato donde el pk sea igual a task_id Y si no esta tira error 404
+        form = CreateTaskForm(instance=task)
+        return render (request,'readtask.html',{
+            'task':task,
+            'form':form
+        })
+    else:
+        try:
+            task = get_object_or_404(Task,pk=task_id, user=request.user)# debe ser el mismo usuario que creo el que pueda modificarlo.
+            form = CreateTaskForm(request.POST,instance=task) #toma los datos de las tareas y genera un nuevo formulario
+            form.save()
+            return redirect('tasks')
+        except ValueError:
+            return render (request,'readtask.html',{
+            'task':task,
+            'form':form,
+            'error': 'There was an error updating your task. Try again.'
+        })
