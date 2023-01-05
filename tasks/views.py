@@ -80,6 +80,8 @@ def create_task(request):
 
 def read_task(request,task_id):
     task=get_object_or_404(Task,pk=task_id)# solicito el modelo Task y busca el dato donde el pk sea igual a task_id Y si no esta tira error 404
+    form = CreateTaskForm(instance=task)
     return render (request,'readtask.html',{
-        'task':task
+        'task':task,
+        'form':form
     })
