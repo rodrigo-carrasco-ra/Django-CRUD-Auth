@@ -1,20 +1,33 @@
 
     {% extends 'base.html' %}
     {% block content %}
-    <h1>Read Your Task</h1>
-    <h2>Task details:</h2>
-    <h1>Title: {{task.title}}</h1>
+                <h1 class="display-4 text-center mt-3 mb-3">Read Your Task</h1>
 
-    {{error}}    
-    
-    <form method="POST">
-        {% csrf_token %}
-        {{form.as_p}}
-        <button>
-            Update Task
-        </button>
-    </form>
+<main class="container-fluid">
+    <div class="row">
+                <div class="col-md-4 offset-md-4">
+                <h2>Task details:</h2>
 
-    <button>Task Completed</button>
+                {{error}}    
+                    <form  method="POST">
+                    {% csrf_token %}
+                    {{form.as_p}}
+                    <div class="d-flex justify-content-between">
 
+                    <button class="btn btn-warning">Update</button>
+                    </form>
+
+                    <form action="{% url 'task_completed' task.id %}" method="POST">
+                    {% csrf_token %}
+                    <button class="btn btn-primary">Completed</button>
+                    </form>
+
+                    <form action="{% url 'delete_task' task.id %}" method="POST">
+                    {% csrf_token %}
+                    <button class="btn btn-danger">Delete</button>
+                    </form>
+                </div>
+        </div>
+    </div>
+</main>
     {% endblock %}

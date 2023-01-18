@@ -5,6 +5,8 @@ from django.contrib.auth import login, logout, authenticate
 from django.db import IntegrityError #valida error del nombre de usuario, el cual es unico. Si se repite tira el error.
 from .forms import CreateTaskForm
 from .models import Task
+from django.utils import timezone
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
@@ -35,10 +37,12 @@ def signup(request):
                     'error':'Password does not match'
                 })
 
+@login_required
 def tasks (request):
     tasks=Task.objects.filter(user=request.user,date_completed__isnull=True) #muestra tareas segun usuario y si datecompleted es falso o no ha sido completada
     return render (request,'tasks.html',{'tasks':tasks})
 
+@login_required
 def logging_out(request):
     logout(request)
     return redirect ('index')
@@ -60,6 +64,7 @@ def signin(request):
             login(request,user) #coloca un sessionid en las cookies
             return redirect ('tasks')
 
+@login_required
 def create_task(request):
     if request.method=='GET':
         return render(request,'createtask.html',{
@@ -78,6 +83,7 @@ def create_task(request):
             'error':'Error, try again.'
         })
 
+@login_required
 def read_task(request,task_id):
     if request.method == 'GET':
         task=get_object_or_404(Task,pk=task_id, user=request.user)# solicito el modelo Task y busca el dato donde el pk sea igual a task_id Y si no esta tira error 404
@@ -98,3 +104,24 @@ def read_task(request,task_id):
             'form':form,
             'error': 'There was an error updating your task. Try again.'
         })
+
+@login_required
+def task_completed(request,task_id):
+    task=get_object_or_404(Task,pk=task_id,user=request.user)
+    if request.method == 'POST':
+        task.date_completed = timezone.now()
+        task.save()
+        return redirect('tasks')
+
+@login_required
+def delete_task(request,task_id):
+    task=get_object_or_404(Task,pk=task_id,user=request.user)
+    if request.method == 'POST':
+        task.date_completed = timezone.now()
+        task.delete()
+        return redirect('tasks')
+
+@login_required
+def all_tasks_completed (request):
+    tasks=Task.objects.filter(user=request.user,date_completed__isnull=False).order_by('date_completed') 
+    return render (request,'tasks.html',{'tasks':tasks})

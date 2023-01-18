@@ -4,23 +4,30 @@
 
 {% block content %}
 
-<h1>Your Pending Tasks</h1>
+<main class="container-fluid">
+    <div class="row">
+         <h1 class="display-3 text-center mt-5 mb-5">Your Pending Tasks</h1>
+        <div class="col-md-6 offset-md-3">
+           
 
-<ul>
+<ul class="list-group">
     {% for i in tasks %}
-    <li>
-        <a href="{% url 'readtask' i.id %}">
-        {% if i.is_important %}
-            <h1>{{i.title}}</h1>
-        {% else %}
-            <h3>{{i.title}}</h3>
-        {% endif %}
-        <p>{{i.description}}</p>
-        <p>{{i.user.username}}</p>
-        <p>{{i.is_important}}</p>
-        </a>
-    </li>
+    <a class="list-group-item" href="{% url 'readtask' i.id %}">
+        <header class="d-flex justify-content-between">
+                    {% if i.is_important %}
+                    <h1 class="fw-bold text-danger">{{i.title}}</h1>
+                    {% else %}
+                    <h2>{{i.title }}</h2>
+                    {% endif %}
+                    <p>Author : {{i.user.username}}</p>
+        </header>
+                    <p>Description: {{i.description}}</p>
+                    <p>Date completed: {{i.date_completed|date:'j M Y:i'}}</p>
+    </a>
     {% endfor %}
 </ul>
+        </div>
+    </div>
+</main>
 
 {% endblock %}
